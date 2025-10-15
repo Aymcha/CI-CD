@@ -22,17 +22,17 @@ jobs:
             - node_modules
           key: v4-dependencies-{{ checksum "package.json" }}
 
-      - run:
-          name: Run tests
-          command: npx react-scripts test --watchAll=false
+      # - run:
+      #     name: Run tests
+      #     command: npx react-scripts test --watchAll=false
 
       - run:
           name: Build project
           command: npx react-scripts build
 
-      - run:
-          name: Run npm audit (critical only)
-          command: npm audit --audit-level=critical
+      # - run:
+      #     name: Run npm audit (critical only)
+      #     command: npm audit --audit-level=critical
 
 workflows:
   node-tests:

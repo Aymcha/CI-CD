@@ -1,4 +1,5 @@
 version: 2.1
+
 jobs:
   build-test:
     docker:
@@ -12,21 +13,28 @@ jobs:
             - v1-dependencies-{{ checksum "package.json" }}
             - v1-dependencies-
 
-      - run: npm install
+      - run:
+          name: Install dependencies
+          command: npm ci
 
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      - run: npm run test
-      - run: npm run build
-
-      # 🔐 Security check
       - run:
-          name: Run npm audit for vulnerabilities
+          name: Run tests
+          command: npm run test
+
+      - run:
+          name: Build project
+          command: npm run build
+
+      # 🔐 Security audit — fail only for CRITICAL vulnerabilities
+      - run:
+          name: Security audit (critical only)
           command: |
-            echo "Running npm audit..."
+            echo "Running npm audit for CRITICAL vulnerabilities only..."
             npm audit --audit-level=critical
 
 workflows:

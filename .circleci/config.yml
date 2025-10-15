@@ -3,24 +3,24 @@ version: 2.1
 jobs:
   build-test:
     docker:
-      - image: circleci/node:14  # Meilleur support pour React
+      - image: circleci/node:18
 
     steps:
       - checkout
 
       - restore_cache:
           keys:
-            - v3-dependencies-{{ checksum "package.json" }}
-            - v3-dependencies-
+            - v4-dependencies-{{ checksum "package.json" }}
+            - v4-dependencies-
 
       - run:
-          name: Install dependencies (include devDeps)
+          name: Install dependencies
           command: npm install
 
       - save_cache:
           paths:
             - node_modules
-          key: v3-dependencies-{{ checksum "package.json" }}
+          key: v4-dependencies-{{ checksum "package.json" }}
 
       - run:
           name: Run tests
@@ -28,7 +28,7 @@ jobs:
 
       - run:
           name: Build project
-          command: npm run build
+          command: npx react-scripts build
 
       - run:
           name: Run npm audit (critical only)

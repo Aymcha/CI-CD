@@ -27,7 +27,11 @@ jobs:
           command: |
             echo "Running npm audit..."
             npm audit --audit-level=critical
-
+      - run:
+          name: Run npm lint for code
+          command: |
+            echo "Running npm lint..."
+            npm run lint
 workflows:
   node-tests:
     jobs:

@@ -3,39 +3,36 @@ version: 2.1
 jobs:
   build-test:
     docker:
-      - image: circleci/node:14
+      - image: circleci/node:14  # Meilleur support pour React
 
     steps:
       - checkout
 
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
+            - v3-dependencies-{{ checksum "package.json" }}
+            - v3-dependencies-
 
       - run:
-          name: Install dependencies
+          name: Install dependencies (include devDeps)
           command: npm install
 
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v3-dependencies-{{ checksum "package.json" }}
 
       - run:
           name: Run tests
-          command: npm run test
+          command: npm test -- --watchAll=false
 
       - run:
           name: Build project
           command: npm run build
 
-      # 🔐 Security audit — fail only for CRITICAL vulnerabilities
       - run:
-          name: Security audit (critical only)
-          command: |
-            echo "Running npm audit for CRITICAL vulnerabilities only..."
-            npm audit --audit-level=critical
+          name: Run npm audit (critical only)
+          command: npm audit --audit-level=critical
 
 workflows:
   node-tests:

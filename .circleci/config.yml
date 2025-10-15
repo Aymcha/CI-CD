@@ -2,29 +2,31 @@ version: 2.1
 jobs:
   build-test:
     docker:
-      # specify the version you desire here
       - image: circleci/node:14
 
     steps:
       - checkout
 
-      # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
 
       - run: npm install
-
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      # run tests!
       - run: npm run test
       - run: npm run build
+
+      # 🔐 Security check
+      - run:
+          name: Run npm audit for vulnerabilities
+          command: |
+            echo "Running npm audit..."
+            npm audit --audit-level=critical
 
 workflows:
   node-tests:

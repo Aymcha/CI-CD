@@ -24,7 +24,7 @@ jobs:
 
       - run:
           name: Run tests
-          command: npm test -- --watchAll=false
+          command: npx react-scripts test --watchAll=false
 
       - run:
           name: Build project

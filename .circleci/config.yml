@@ -1,5 +1,4 @@
 version: 2.1
-
 jobs:
   build-test:
     docker:
@@ -10,29 +9,25 @@ jobs:
 
       - restore_cache:
           keys:
-            - v4-dependencies-{{ checksum "package.json" }}
-            - v4-dependencies-
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
 
-      - run:
-          name: Install dependencies
-          command: npm install
+      - run: npm install
 
       - save_cache:
           paths:
             - node_modules
-          key: v4-dependencies-{{ checksum "package.json" }}
+          key: v1-dependencies-{{ checksum "package.json" }}
 
-      # - run:
-      #     name: Run tests
-      #     command: npx react-scripts test --watchAll=false
+      - run: npm run test
+      - run: npm run build
 
+      # 🔐 Security check
       - run:
-          name: Build project
-          command: npx react-scripts build
-
-      # - run:
-      #     name: Run npm audit (critical only)
-      #     command: npm audit --audit-level=critical
+          name: Run npm audit for vulnerabilities
+          command: |
+            echo "Running npm audit..."
+            npm audit --audit-level=high
 
 workflows:
   node-tests:
